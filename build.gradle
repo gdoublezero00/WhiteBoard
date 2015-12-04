@@ -1,0 +1,68 @@
+apply plugin: 'java'
+apply plugin: 'war'
+//apply plugin: 'jetty'
+apply plugin: 'jettyEclipse'
+apply plugin: 'application'
+
+mainClassName = 'com.example.Main'
+
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+			url 'http://dl.bintray.com/khoulaiz/gradle-plugins'
+		}
+	}
+	dependencies {
+		classpath (group: 'com.sahlbach.gradle', name: 'gradle-jetty-eclipse-plugin', version: '1.9+')
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def defaultEncoding = 'UTF-8'
+
+configurations {
+	executableWar
+}
+
+dependencies {
+	compile 'org.springframework:spring-webmvc:4.1.6.RELEASE'
+	compile 'org.springframework.data:spring-data-mongodb:1.7.0.RELEASE'
+	compile 'org.eclipse.jetty:jetty-webapp:9.2.11.v20150529'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.5.4'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.5.4'
+
+	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+	providedCompile 'org.slf4j:slf4j-api:1.7.12'
+
+	executableWar 'org.slf4j:slf4j-api:1.7.12'
+	executableWar 'org.eclipse.jetty:jetty-webapp:9.2.11.v20150529'
+	executableWar 'org.eclipse.jetty:jetty-jsp:9.2.11.v20150529'
+}
+
+compileJava {
+	options.encoding = defaultEncoding
+}
+
+jettyEclipseRun {
+	httpPort = 9999
+}
+
+war {
+	from {
+		configurations.executableWar.collect {
+			return it.isDirectory() ? it : zipTree(it)
+		}
+	}
+	from "$buildDir/classes/main"
+	exclude('**/META_INF/*.SF', '**/META-INF/*.RSA', '**/META-INF/*.DSA')
+	manifest {
+		attributes "Main-Class" : "com.example.Main"
+	}
+}

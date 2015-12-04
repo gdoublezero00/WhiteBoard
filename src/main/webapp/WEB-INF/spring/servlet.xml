@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/data/mongo 
+	http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd" >
+ 
+	<context:component-scan base-package="com.example" />
+	<context:component-scan base-package="com.example.model.repositories" />
+	<mvc:annotation-driven />
+
+	<mvc:resources mapping="/assets/upload/**" location="/WEB-INF/resources/upload/" />
+	<mvc:resources mapping="/assets/image/**" location="/WEB-INF/resources/image/" />
+	<mvc:resources mapping="/assets/css/**" location="/WEB-INF/resources/css/" />
+	<mvc:resources mapping="/assets/js/**" location="/WEB-INF/resources/js/" />
+	<mvc:resources mapping="/assets/components/**" location="/WEB-INF/resources/components/" />
+
+	<bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
+		<property name="host" value="192.19.16.101" />
+	</bean>
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongo" ref="mongo" />
+		<constructor-arg name="databaseName" value="whiteboard" />
+	</bean>
+	<mongo:repositories base-package="com.example.model.repositories" />
+
+
+	<bean id="viewResolver" 
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.support.StandardServletMultipartResolver" >
+	</bean>
+
+</beans>

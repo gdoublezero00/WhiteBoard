@@ -1,0 +1,9 @@
+*~
+*.swp
+*.class
+*.old
+
+node_modules/
+lib/
+.gradle/
+src/main/webapp/WEB-INF/resources/components/
